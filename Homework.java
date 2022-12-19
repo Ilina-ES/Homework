@@ -1,82 +1,109 @@
-import org.json.*;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.*;
 
-public class Homework02 {
-     public static void main(String[] args){
-          filtering();
-          //bubbleSort();
-          //derivationOfGrades();
-     }
-     
-/**
-* Дана строка sql-запроса "select * from students where".
-* Сформируйте часть WHERE этого запроса, используя StringBuilder.
-* Данные для фильтрации приведены ниже в виде json строки
-*/
-public static void filtering(){
-     JSONObject student = new JSONObject("{\"name\":\"Ivanov\", \"country\":\"Russia\", \"city\":\"Moscow\", \"age\":\"null\"}");
-     String name = (String) student.get("name");
-     String country = (String) student.get("country");
-     String city = (String) student.get("city");
-     System.out.println("select * from students where name = " + name + " and country = " + country + "and city = " + city);
-}
-     
-/**
-* Реализуйте алгоритм сортировки пузырьком числового массива, результат после каждой итерации запишите в лог-файл
-*/
-public static String bubbleSort(){
-     Logger logger = Logger.getLogger(Main.class.getName());
-     FileHandler fh = null;
-     try {
-          fh = new FileHandler("log.txt");
-     } catch (IOException e) {
-          throw new RuntimeException(e);
-          }
-     logger.addHandler(fh);
-     SimpleFormatter sFormat = new SimpleFormatter();
-     fh.setFormatter(sFormat);
-     int[] array = new int[12];
-     for (int i = 0; i < array.length; i++)
-     {
-          array[i] = ((int)(Math.random() * 10));
-     }
-     boolean isSorted = false;
-     int value;
-     while(!isSorted){
-          isSorted = true;
-          for (int i = 0; i < array.length-1; i++){
-               if(array[i] > array[i+1]){
-               isSorted = false;
-               value = array[i];
-               array[i] = array[i+1];
-               array[i+1] = value;
-               }
-          logger.info(Arrays.toString(array));
-          }
-     }
-     return Arrays.toString(array);
-}
-     
-/**
-* Дана json строка (можно сохранить в файл и читать из файла)
-* Написать метод(ы), который распарсит json и, используя StringBuilder,
-* создаст строки вида: Студент [фамилия] получил [оценка] по предмету [предмет]
-*/
-public static void derivationOfGrades(){
-     JSONArray students = new JSONArray("[" +
-          "{\"фамилия\":\"Иванов\",\"оценка\":\"5\",\"предмет\":\"Математика\"}," +
-          "{\"фамилия\":\"Петрова\",\"оценка\":\"4\",\"предмет\":\"Информатика\"}," +
-          "{\"фамилия\":\"Краснов\",\"оценка\":\"5\",\"предмет\":\"Физика\"}]");
-     for (int i = 0; i < students.length(); i++){
-          StringBuilder lastName = new StringBuilder((String) students.getJSONObject(i).get("фамилия"));
-          StringBuilder grade = new StringBuilder((String) students.getJSONObject(i).get("оценка"));
-          StringBuilder subject = new StringBuilder((String) students.getJSONObject(i).get("предмет"));
-          System.out.println("Студент(ка) " + lastName + " получил(а) " + grade + " по предмету " + subject);
-     }
-}
-     
+
+public class Homework03{
+
+    public static void main(String[] args) {
+//        int[] array = new int[10];
+//        Random random = new Random();
+//        for (int i = 0; i < array.length; i++) {
+//            array[i] = random.nextInt(10);
+//        }
+//        System.out.println(Arrays.toString(array));
+//        System.out.println(Arrays.toString(mergeSorting(array)));
+
+        //excludeEvenNum();
+        searchInArray();
+    }
+
+    /* 1. Реализовать алгоритм сортировки слиянием*/
+
+    public static int[] mergeSorting(int[] array1) {
+        int[] buffer1 = Arrays.copyOf(array1, array1.length);
+        int[] buffer2 = new int[array1.length];
+        int[] result = mergesortInner(buffer1, buffer2, 0, array1.length);
+        return result;
+    }
+
+    /**
+     *
+     * @param buffer1 Массив для сортировки.
+     * @param buffer2 Буфер. Размер должен быть равен размеру buffer1.
+     * @param startIndex Начальный индекс в buffer1 для сортировки.
+     * @param endIndex Конечный индекс в buffer1 для сортировки.
+     * @return
+     */
+    public static int[] mergesortInner(int[] buffer1, int[] buffer2, int startIndex, int endIndex) {
+        if (startIndex >= endIndex - 1) {
+            return buffer1;
+        }
+
+        // уже отсортирован.
+        int middle = startIndex + (endIndex - startIndex) / 2;
+        int[] sorted1 = mergesortInner(buffer1, buffer2, startIndex, middle);
+        int[] sorted2 = mergesortInner(buffer1, buffer2, middle, endIndex);
+
+        // Слияние
+        int index1 = startIndex;
+        int index2 = middle;
+        int destIndex = startIndex;
+        int[] result = sorted1 == buffer1 ? buffer2 : buffer1;
+        while (index1 < middle && index2 < endIndex) {
+            result[destIndex++] = sorted1[index1] < sorted2[index2]
+                    ? sorted1[index1++] : sorted2[index2++];
+        }
+        while (index1 < middle) {
+            result[destIndex++] = sorted1[index1++];
+        }
+        while (index2 < endIndex) {
+            result[destIndex++] = sorted2[index2++];
+        }
+        return result;
+    }
+
+    /*2. Пусть дан произвольный список целых чисел, удалить из него четные числа*/
+    public static void excludeEvenNum() {
+        List<Integer> array = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            int val = random.nextInt(100);
+            array.add(val);
+        }
+        System.out.println(Arrays.asList(array));
+        for (int i = 0; i < array.size(); ) {
+            if(array.get(i) % 2 == 0) {
+                array.remove(i);
+            } else {
+                i++;
+            }
+        }
+        System.out.println(Arrays.asList(array));
+    }
+
+    /* 3. Задан целочисленный список ArrayList. Найти минимальное, максимальное и среднее из этого списка.*/
+    public static void searchInArray() {
+        List<Integer> array = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            int val = random.nextInt(100);
+            array.add(val);
+        }
+        System.out.println(Arrays.asList(array));
+        int max = array.get(0);
+        int min = array.get(0);
+        int mean = 0;
+        for (int i = 0; i < array.size(); i++) {
+            if(array.get(i) > max) {
+                max = array.get(i);
+            }
+            if(array.get(i) < min) {
+                min = array.get(i);
+            }
+            mean = mean + array.get(i);
+        }
+        mean = mean / array.size(); 
+        System.out.println("Минимальное число: " + min);
+        System.out.println("Максимальное число: " + max);
+        System.out.println("Среднее число: " + mean);
+    }
 }
