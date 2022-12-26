@@ -1,109 +1,117 @@
 import java.util.*;
 
-
-public class Homework03{
-
+public class Homework04 {
     public static void main(String[] args) {
-//        int[] array = new int[10];
-//        Random random = new Random();
-//        for (int i = 0; i < array.length; i++) {
-//            array[i] = random.nextInt(10);
-//        }
-//        System.out.println(Arrays.toString(array));
-//        System.out.println(Arrays.toString(mergeSorting(array)));
+        createLinkedListForFlipped();
+        addLinkedList();
+        backInCalculator();
 
-        //excludeEvenNum();
-        searchInArray();
-    }
-
-    /* 1. Реализовать алгоритм сортировки слиянием*/
-
-    public static int[] mergeSorting(int[] array1) {
-        int[] buffer1 = Arrays.copyOf(array1, array1.length);
-        int[] buffer2 = new int[array1.length];
-        int[] result = mergesortInner(buffer1, buffer2, 0, array1.length);
-        return result;
     }
 
     /**
-     *
-     * @param buffer1 Массив для сортировки.
-     * @param buffer2 Буфер. Размер должен быть равен размеру buffer1.
-     * @param startIndex Начальный индекс в buffer1 для сортировки.
-     * @param endIndex Конечный индекс в buffer1 для сортировки.
-     * @return
+     * 1. Пусть дан LinkedList с несколькими элементами.
+     * Реализуйте метод, который вернет “перевернутый” список.
      */
-    public static int[] mergesortInner(int[] buffer1, int[] buffer2, int startIndex, int endIndex) {
-        if (startIndex >= endIndex - 1) {
-            return buffer1;
+    private static void createLinkedListForFlipped() {
+        List<Integer> list = new LinkedList<>();
+        list.add(3);
+        list.add(5);
+        list.add(7);
+        list.add(9);
+        System.out.println(flippedList(list));
+    }
+    private static List<Integer> flippedList(List<Integer> list){
+        List<Integer> resultlist = new LinkedList<>();
+        for (int i = list.size()-1; i >= 0; i--) {
+            resultlist.add(list.get(i));
         }
-
-        // уже отсортирован.
-        int middle = startIndex + (endIndex - startIndex) / 2;
-        int[] sorted1 = mergesortInner(buffer1, buffer2, startIndex, middle);
-        int[] sorted2 = mergesortInner(buffer1, buffer2, middle, endIndex);
-
-        // Слияние
-        int index1 = startIndex;
-        int index2 = middle;
-        int destIndex = startIndex;
-        int[] result = sorted1 == buffer1 ? buffer2 : buffer1;
-        while (index1 < middle && index2 < endIndex) {
-            result[destIndex++] = sorted1[index1] < sorted2[index2]
-                    ? sorted1[index1++] : sorted2[index2++];
-        }
-        while (index1 < middle) {
-            result[destIndex++] = sorted1[index1++];
-        }
-        while (index2 < endIndex) {
-            result[destIndex++] = sorted2[index2++];
-        }
-        return result;
+        return resultlist;
     }
 
-    /*2. Пусть дан произвольный список целых чисел, удалить из него четные числа*/
-    public static void excludeEvenNum() {
-        List<Integer> array = new ArrayList<>();
-        Random random = new Random();
-        for (int i = 0; i < 10; i++) {
-            int val = random.nextInt(100);
-            array.add(val);
-        }
-        System.out.println(Arrays.asList(array));
-        for (int i = 0; i < array.size(); ) {
-            if(array.get(i) % 2 == 0) {
-                array.remove(i);
-            } else {
-                i++;
-            }
-        }
-        System.out.println(Arrays.asList(array));
+    /**
+     * 2. Реализуйте очередь с помощью LinkedList со следующими методами:
+     * enqueue() - помещает элемент в конец очереди,
+     * dequeue() - возвращает первый элемент из очереди и удаляет его,
+     * first() - возвращает первый элемент из очереди, не удаляя.
+     */
+    private static void addLinkedList() {
+        Deque<Integer> queue = new LinkedList<>();
+        queue.add(3);
+        queue.add(5);
+        queue.add(7);
+        queue.add(9);
+        System.out.println(queue);
+        enqueue(10, queue);
+        System.out.println(queue);
+        System.out.println(dequeue(queue));
+        System.out.println(queue);
+        System.out.println(first(queue));
+        System.out.println(queue);
+    }
+    private static void enqueue(int element, Deque<Integer> queue) {
+        queue.addLast(element);
+    }
+    private static int dequeue(Deque<Integer> queue) {
+        return queue.pollFirst();
+    }
+    private static int first(Deque<Integer> queue) {
+        return queue.peekFirst();
     }
 
-    /* 3. Задан целочисленный список ArrayList. Найти минимальное, максимальное и среднее из этого списка.*/
-    public static void searchInArray() {
-        List<Integer> array = new ArrayList<>();
-        Random random = new Random();
-        for (int i = 0; i < 10; i++) {
-            int val = random.nextInt(100);
-            array.add(val);
-        }
-        System.out.println(Arrays.asList(array));
-        int max = array.get(0);
-        int min = array.get(0);
-        int mean = 0;
-        for (int i = 0; i < array.size(); i++) {
-            if(array.get(i) > max) {
-                max = array.get(i);
+    /**
+     * 3. В калькулятор добавьте возможность отменить последнюю операцию.
+     */
+    private static void backInCalculator() {
+        Deque<Integer> queue = new LinkedList<>();
+        boolean flag = true;
+        while (flag) {
+            int num = calculator();
+            queue.addLast(num);
+            System.out.println(queue);
+            System.out.println("Для отмены действия введите 'отмена'");
+            System.out.println("Для выхода из калькулятора введите 'выход'");
+            Scanner scanner = new Scanner(System.in);
+            String back = scanner.next();
+
+            if (back.equals("отмена")) {
+                queue.pollFirst();
             }
-            if(array.get(i) < min) {
-                min = array.get(i);
+            if (back.equals("выход")) {
+                flag = false;
             }
-            mean = mean + array.get(i);
         }
-        mean = mean / array.size(); 
-        System.out.println("Минимальное число: " + min);
-        System.out.println("Максимальное число: " + max);
-        System.out.println("Среднее число: " + mean);
+    }
+    public static int calculator() {
+        System.out.println("Введите число а: ");
+        Scanner enterNumber = new Scanner(System.in);
+        int a = enterNumber.nextInt();
+        System.out.println("Введите число b: ");
+        int b = enterNumber.nextInt();
+        System.out.println("Введите действие (+,-,*,/): ");
+        char c = enterNumber.next().charAt(0);
+        if(c == '+') {
+            return sum(a, b);
+        } else if (c == '-') {
+            return difference(a, b);
+        } else if (c == '*') {
+            return multiplication(a, b);
+        } else if (c == '/') {
+            return division(a, b);
+        } else {
+            System.out.println("Введены неверные знгачения");
+            return 0;
+        }
+    }
+    public static int sum(int a, int b) {
+        return a+b;
+    }
+    public static int difference(int a, int b) {
+        return a-b;
+    }
+    public static int multiplication(int a, int b) {
+        return a*b;
+    }
+    public static int division(int a, int b) {
+        return a/b;
     }
 }
