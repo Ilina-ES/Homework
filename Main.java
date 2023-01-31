@@ -1,29 +1,24 @@
-package homeWork2;
-import java.util.HashMap;
-import java.util.Map;
+package homeWork1;
+
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        Map<String, String> map = new HashMap<>();
-        map.put("Хороший ключ", "Переменная");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("ведите имя: ");
+        String firstName = scanner.nextLine();
+        System.out.println("ведите фамилию: ");
+        String secondName = scanner.nextLine();
+        System.out.println("ведите возраст ");
+        int age = scanner.nextInt();
+        System.out.println("ведите стутс: ");
+        String status = scanner.nextLine();
 
-        // Инициализация нашего "иммутабельного" класса
-        AlmostMutableClass almostMutable = new AlmostMutableClass("Это неизменяемый", map);
-        MutableClass mutableClass = new MutableClass("Это изменяемый класс", map);
-
-        // Мы не можем изменять состояние объекта через добавление элементов в полученную map
-        System.out.println("Результат в неизменяемом классе после того, как мы получим map");
-        almostMutable.getFieldMap().put("Плохой ключ", "Другое значение");
-        almostMutable.getFieldMap().keySet().forEach(e -> System.out.println(e));
-
-        System.out.println("Результат в изменяемом классе после того, как мы получим map");
-        mutableClass.getFieldMap().put("Плохой ключ", "Другое значение");
-        mutableClass.getFieldMap().keySet().forEach(e -> System.out.println(e));
-
-        System.out.println("");
-        System.out.println("Результат после изменения исходного map в неизменяемом классе");
-        map.put("Иной ключ", "Иное значение");
-        almostMutable.getFieldMap().keySet().forEach(e -> System.out.println(e));
-        System.out.println("Результат после изменения исходного map в изменяемом классе");
-        mutableClass.getFieldMap().keySet().forEach(e -> System.out.println(e));
+        Children child = new Children(firstName, secondName, age, status);
+        System.out.println(child);
+        System.out.println(child.mother());
+        System.out.println(child.father());
+        System.out.println(child.grandFather());
+        System.out.println(child.grandMother());
     }
 }
